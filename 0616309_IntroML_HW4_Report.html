@@ -34,7 +34,7 @@
 </head>
 
 <body>
-    <div id="doc" class="markdown-body container-fluid comment-enabled" data-hard-breaks="true"><h1 id="Introduction-to-Machine-Learning-HW4-Report" data-id="Introduction-to-Machine-Learning-HW4-Report"><a class="anchor hidden-xs" href="#Introduction-to-Machine-Learning-HW4-Report" title="Introduction-to-Machine-Learning-HW4-Report"><span class="octicon octicon-link"></span></a><span>Introduction to Machine Learning HW4 Report</span></h1><p><span>姓名：王祥任</span><br>
+    <div id="doc" class="markdown-body container-fluid comment-inner comment-enabled" data-hard-breaks="true"><h1 id="Introduction-to-Machine-Learning-HW4-Report" data-id="Introduction-to-Machine-Learning-HW4-Report"><a class="anchor hidden-xs" href="#Introduction-to-Machine-Learning-HW4-Report" title="Introduction-to-Machine-Learning-HW4-Report"><span class="octicon octicon-link"></span></a><span>Introduction to Machine Learning HW4 Report</span></h1><p><span>姓名：王祥任</span><br>
 <span>學號：0616309</span></p><p><span class="toc"><ul>
 <li><a href="#Introduction-to-Machine-Learning-HW4-Report" title="Introduction to Machine Learning HW4 Report">Introduction to Machine Learning HW4 Report</a><ul>
 <li><a href="#Data-Input" title="Data Input">Data Input</a></li>
@@ -51,7 +51,7 @@
 </ul>
 </li>
 <li><a href="#Holdout-Validation" title="Holdout Validation">Holdout Validation</a></li>
-<li><a href="#Result" title="Result">Result</a><ul>
+<li><a href="#Results" title="Results">Results</a><ul>
 <li><a href="#Zero-Padding1" title="Zero-Padding">Zero-Padding</a></li>
 <li><a href="#Word2Vec1" title="Word2Vec">Word2Vec</a></li>
 </ul>
@@ -66,7 +66,7 @@
 test = pd.read_json(<span class="hljs-string">'test.json'</span>)
 </div></div></code></pre><h2 id="Data-Preprocessing" data-id="Data-Preprocessing"><a class="anchor hidden-xs" href="#Data-Preprocessing" title="Data-Preprocessing"><span class="octicon octicon-link"></span></a><span>Data Preprocessing</span></h2><h3 id="Transform-amp-Any-data-augmentation-that-can-boost-your-final-results" data-id="Transform-amp-Any-data-augmentation-that-can-boost-your-final-results"><a class="anchor hidden-xs" href="#Transform-amp-Any-data-augmentation-that-can-boost-your-final-results" title="Transform-amp-Any-data-augmentation-that-can-boost-your-final-results"><span class="octicon octicon-link"></span></a><span>Transform &amp; Any data augmentation that can boost your final results</span></h3><p><span>直接讀取</span><code>train.json</code><span>，每一筆資料有三個欄位，分別是</span><code>id</code><span>, </span><code>cuisine</code><span>, </span><code>ingredients</code></p><p><img src="https://i.imgur.com/HbMG56c.png" alt=""></p><p><span>而我們只需要</span><code>cuisine</code><span>作為</span><code>category</code><span>和</span><code>ingredients</code><span>作為</span><code>feature</code><span>即可。其中</span><code>ingredients</code><span>是一個</span><code>list</code><span>，其中內容物的長度不固定，為了維持所有資料的維度相同，我有想到兩種做法:</span></p><ol>
 <li><span>採取最簡單的</span><code>zero padding</code><span>，</span><code>feature</code><span>欄位的極限長度由具有最多</span><code>ingredient</code><span>的資料決定，所有不達此長度者皆補零。</span></li>
-<li><span>使用</span><code>word2vec</code><span>，將每一個材料轉換為極限長度為</span><code>300</code><span>的向量，並進行加總。(不過我也是第一次用，不知道怎麼用才比較正確)</span></li>
+<li><span>使用</span><code>word2vec</code><span>，將每一個材料轉換為長度為</span><code>300</code><span>的向量，並進行加總。(不過我也是第一次用，不知道怎麼用才比較正確)</span></li>
 </ol><p><span>若採用方法1，我們必須將所有材料從</span><code>字串</code><span>轉換成</span><code>整數</code><span>型態，那我是利用</span><code>dict</code><span>簡單的建立一個查表的機制來轉換所有</span><code>ingredient</code><span>。若採用方法2則不需考慮此問題。</span></p><p><span>我們也必須對</span><code>cuisine</code><span>做相同的處理，不過這部分只須交由</span><code>sklearn.preprocessing.LabelEncoder</code><span>來進行處裡即可。</span></p><h3 id="Zero-Padding" data-id="Zero-Padding"><a class="anchor hidden-xs" href="#Zero-Padding" title="Zero-Padding"><span class="octicon octicon-link"></span></a><span>Zero-Padding</span></h3><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
 <span data-linenumber="2"></span>
 <span data-linenumber="3"></span>
@@ -145,7 +145,30 @@ train_set_zp
 <span data-linenumber="17"></span>
 <span data-linenumber="18"></span>
 <span data-linenumber="19"></span>
-<span data-linenumber="20"></span></div><div class="code"><span class="hljs-comment"># Import Word2Vec</span>
+<span data-linenumber="20"></span>
+<span data-linenumber="21"></span>
+<span data-linenumber="22"></span>
+<span data-linenumber="23"></span>
+<span data-linenumber="24"></span>
+<span data-linenumber="25"></span>
+<span data-linenumber="26"></span>
+<span data-linenumber="27"></span>
+<span data-linenumber="28"></span>
+<span data-linenumber="29"></span>
+<span data-linenumber="30"></span>
+<span data-linenumber="31"></span>
+<span data-linenumber="32"></span>
+<span data-linenumber="33"></span>
+<span data-linenumber="34"></span>
+<span data-linenumber="35"></span>
+<span data-linenumber="36"></span>
+<span data-linenumber="37"></span>
+<span data-linenumber="38"></span>
+<span data-linenumber="39"></span>
+<span data-linenumber="40"></span>
+<span data-linenumber="41"></span>
+<span data-linenumber="42"></span>
+<span data-linenumber="43"></span></div><div class="code"><span class="hljs-comment"># Import Word2Vec</span>
 <span class="hljs-keyword">from</span> gensim.models.word2vec <span class="hljs-keyword">import</span> Word2Vec
 
 <span class="hljs-comment"># Data Loading</span>
@@ -163,15 +186,38 @@ all_ingredients = []
 <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> test_ingredients:
     all_ingredients.append(d)
 
-<span class="hljs-comment"># Prepare </span>
+<span class="hljs-comment"># Train Word2Vec </span>
 model = Word2Vec(all_ingredients, size=<span class="hljs-number">300</span>, iter=<span class="hljs-number">20</span>, min_count=<span class="hljs-number">1</span>, workers=<span class="hljs-number">12</span>)
+
+<span class="hljs-comment"># Preprocessing training data</span>
+train = pd.read_json(<span class="hljs-string">'train.json'</span>)
+train_set = []
+<span class="hljs-keyword">for</span> data <span class="hljs-keyword">in</span> train.values.tolist():
+    tmp = []
+    tmp.append(data[<span class="hljs-number">1</span>])
+    <span class="hljs-comment"># Sum up all the ingredients</span>
+    gre_vec = np.array([<span class="hljs-number">0</span> <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> range(<span class="hljs-number">300</span>)])
+    <span class="hljs-keyword">for</span> gre <span class="hljs-keyword">in</span> data[<span class="hljs-number">2</span>]:
+        gre_vec = np.add(gre_vec, np.array(model.wv[gre]))
+    tmp.extend(gre_vec)
+    train_set.append(tmp)
+train_set = pd.DataFrame(train_set)
+
+<span class="hljs-comment"># Label Encoding</span>
+le = sk.preprocessing.LabelEncoder()
+le.fit(train_set[<span class="hljs-number">0</span>])
+
+classes = le.classes_
+
+train_set[<span class="hljs-number">0</span>] = le.transform(train_set[<span class="hljs-number">0</span>])
+train_set
 </div></div></code></pre><h3 id="Shuffle" data-id="Shuffle"><a class="anchor hidden-xs" href="#Shuffle" title="Shuffle"><span class="octicon octicon-link"></span></a><span>Shuffle</span></h3><p><span>該部分會交由進行</span><code>Holdout Validation</code><span>時的前處理進行。由</span><code>sklearn.model_selection.train_test_split</code><span>在進行切割時同時進行亂數抽取的動作。</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
 <span data-linenumber="2"></span></div><div class="code">    train_x, valid_x, train_y, valid_y = train_test_split(x, y, train_size=<span class="hljs-number">0.7</span>,
 random_state=random_state) <span class="hljs-comment"># ratio = 7:3</span>
-</div></div></code></pre><h2 id="Model-Construction" data-id="Model-Construction"><a class="anchor hidden-xs" href="#Model-Construction" title="Model-Construction"><span class="octicon octicon-link"></span></a><span>Model Construction</span></h2><h3 id="Support-Vector-Machine" data-id="Support-Vector-Machine"><a class="anchor hidden-xs" href="#Support-Vector-Machine" title="Support-Vector-Machine"><span class="octicon octicon-link"></span></a><span>Support Vector Machine</span></h3><p><span>我直接使用</span><a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html" target="_blank" rel="noopener"><code>sklearn.svm.SVC</code></a><span>來建立SVM的模型。</span><code>SVC</code><span>是</span><code>C-Support Vector Classification</code><span>的縮寫，所有參數皆採用預設。</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
-<span data-linenumber="2"></span></div><div class="code">clf = sk.svm.SVC()
+</div></div></code></pre><h2 id="Model-Construction" data-id="Model-Construction"><a class="anchor hidden-xs" href="#Model-Construction" title="Model-Construction"><span class="octicon octicon-link"></span></a><span>Model Construction</span></h2><h3 id="Support-Vector-Machine" data-id="Support-Vector-Machine"><a class="anchor hidden-xs" href="#Support-Vector-Machine" title="Support-Vector-Machine"><span class="octicon octicon-link"></span></a><span>Support Vector Machine</span></h3><p><span>我直接使用</span><a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html" target="_blank" rel="noopener"><code>sklearn.svm.SVC</code></a><span>來建立SVM的模型。</span><code>SVC</code><span>是</span><code>C-Support Vector Classification</code><span>的縮寫，所有參數皆採用預設。而在使用</span><code>word2vec</code><span>的資料測試時，</span><code>kernel</code><span>除了預設的</span><code>rbf</code><span>，還會測試</span><code>linear</code><span>、</span><code>poly</code><span>和</span><code>sigmoid</code><span>三種。</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span></div><div class="code">clf = sk.svm.SVC(kernel=kernel_type)
 clf.fit(train_x, train_y)
-</div></div></code></pre><h3 id="Artificial-Neural-Networks" data-id="Artificial-Neural-Networks"><a class="anchor hidden-xs" href="#Artificial-Neural-Networks" title="Artificial-Neural-Networks"><span class="octicon octicon-link"></span></a><span>Artificial Neural Networks</span></h3><p><span>我是使用</span><code>tensorflow</code><span>來建立ANN的模型。</span><a href="https://www.tensorflow.org/overview?hl=zh-tw" target="_blank" rel="noopener"><span>參考</span></a><span>。</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+</div></div></code></pre><h3 id="Artificial-Neural-Networks" data-id="Artificial-Neural-Networks"><a class="anchor hidden-xs" href="#Artificial-Neural-Networks" title="Artificial-Neural-Networks"><span class="octicon octicon-link"></span></a><span>Artificial Neural Networks</span></h3><p><span>我是使用</span><code>tensorflow.keras</code><span>來建立ANN的模型。</span><a href="https://www.tensorflow.org/overview?hl=zh-tw" target="_blank" rel="noopener"><span>參考</span></a><span>。</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
 <span data-linenumber="2"></span>
 <span data-linenumber="3"></span>
 <span data-linenumber="4"></span>
@@ -289,7 +335,58 @@ pred = [np.argmax(d) <span class="hljs-keyword">for</span> d <span class="hljs-k
 
 hold_out(train_set, classes, <span class="hljs-string">'svm'</span>)
 hold_out(train_set, classes, <span class="hljs-string">'ann'</span>)
-</div></div></code></pre><h2 id="Result" data-id="Result"><a class="anchor hidden-xs" href="#Result" title="Result"><span class="octicon octicon-link"></span></a><span>Result</span></h2><h3 id="Zero-Padding1" data-id="Zero-Padding"><a class="anchor hidden-xs" href="#Zero-Padding1" title="Zero-Padding1"><span class="octicon octicon-link"></span></a><span>Zero-Padding</span></h3><h4 id="SVM" data-id="SVM"><a class="anchor hidden-xs" href="#SVM" title="SVM"><span class="octicon octicon-link"></span></a><span>SVM</span></h4><pre><code>|-----|-----|-----|-----|-----|
+</div></div></code></pre><p><span>另外還有一個專門給</span><code>svm</code><span>使用的，目的是比較</span><code>kernel</code><span>不同的結果</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span>
+<span data-linenumber="14"></span>
+<span data-linenumber="15"></span>
+<span data-linenumber="16"></span>
+<span data-linenumber="17"></span>
+<span data-linenumber="18"></span>
+<span data-linenumber="19"></span>
+<span data-linenumber="20"></span>
+<span data-linenumber="21"></span>
+<span data-linenumber="22"></span>
+<span data-linenumber="23"></span>
+<span data-linenumber="24"></span>
+<span data-linenumber="25"></span>
+<span data-linenumber="26"></span></div><div class="code"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">svm_hold_out</span><span class="hljs-params">(data, classes, kernel_type=<span class="hljs-string">'rbf'</span>, target_name=<span class="hljs-number">0</span>, ratio=<span class="hljs-number">0.7</span>, random_state=<span class="hljs-number">0</span>)</span>:</span>
+    <span class="hljs-comment"># Split Data</span>
+    y = data[target_name] <span class="hljs-comment"># Target</span>
+    x = data.drop(target_name, axis=<span class="hljs-number">1</span>) <span class="hljs-comment"># Attribute</span>
+    train_x, valid_x, train_y, valid_y = train_test_split(x, y, train_size=ratio, random_state=random_state) <span class="hljs-comment"># ratio = 7:3</span>
+
+    <span class="hljs-comment"># train Model</span>
+    clf = sk.svm.SVC(kernel=kernel_type)
+    clf.fit(train_x, train_y)
+    <span class="hljs-comment"># Predict</span>
+    pred = clf.predict(valid_x)
+
+    <span class="hljs-comment"># Display</span>
+    cl_labels = np.array(classes)
+
+    print(<span class="hljs-string">"|-----|-----|-----|-----|-----|"</span>)
+    print(<span class="hljs-string">"              %s              "</span> % (kernel_type))
+    print(<span class="hljs-string">"|-----|-----|-----|-----|-----|"</span>)
+
+    print(classification_report(valid_y, pred, target_names=cl_labels))
+    plot_confusion_matrix(valid_y, pred, classes=cl_labels, cmap=plt.cm.Blues)
+    plt.show()
+
+svm_hold_out(train_set, classes, <span class="hljs-string">'linear'</span>)
+svm_hold_out(train_set, classes, <span class="hljs-string">'poly'</span>)
+svm_hold_out(train_set, classes, <span class="hljs-string">'sigmoid'</span>)
+</div></div></code></pre><h2 id="Results" data-id="Results"><a class="anchor hidden-xs" href="#Results" title="Results"><span class="octicon octicon-link"></span></a><span>Results</span></h2><h3 id="Zero-Padding1" data-id="Zero-Padding"><a class="anchor hidden-xs" href="#Zero-Padding1" title="Zero-Padding1"><span class="octicon octicon-link"></span></a><span>Zero-Padding</span></h3><h4 id="SVM" data-id="SVM"><a class="anchor hidden-xs" href="#SVM" title="SVM"><span class="octicon octicon-link"></span></a><span>SVM</span></h4><pre><code>|-----|-----|-----|-----|-----|
               svm              
 |-----|-----|-----|-----|-----|
               precision    recall  f1-score   support
@@ -347,8 +444,8 @@ cajun_creole       0.00      0.00      0.00       350
     accuracy                           0.20      8933
    macro avg       0.03      0.06      0.03      8933
 weighted avg       0.08      0.20      0.11      8933
-</code></pre><p><img src="https://i.imgur.com/cm2Rck3.png" alt=""></p><h3 id="Word2Vec1" data-id="Word2Vec"><a class="anchor hidden-xs" href="#Word2Vec1" title="Word2Vec1"><span class="octicon octicon-link"></span></a><span>Word2Vec</span></h3><h4 id="SVM1" data-id="SVM"><a class="anchor hidden-xs" href="#SVM1" title="SVM1"><span class="octicon octicon-link"></span></a><span>SVM</span></h4><pre><code>|-----|-----|-----|-----|-----|
-              svm              
+</code></pre><p><img src="https://i.imgur.com/cm2Rck3.png" alt=""></p><h3 id="Word2Vec1" data-id="Word2Vec"><a class="anchor hidden-xs" href="#Word2Vec1" title="Word2Vec1"><span class="octicon octicon-link"></span></a><span>Word2Vec</span></h3><h4 id="SVM-rbf" data-id="SVM-rbf"><a class="anchor hidden-xs" href="#SVM-rbf" title="SVM-rbf"><span class="octicon octicon-link"></span></a><span>SVM-rbf</span></h4><pre><code>|-----|-----|-----|-----|-----|
+              svm-rbf              
 |-----|-----|-----|-----|-----|
               precision    recall  f1-score   support
 
@@ -376,7 +473,94 @@ cajun_creole       0.75      0.65      0.69       350
     accuracy                           0.73      8933
    macro avg       0.70      0.56      0.60      8933
 weighted avg       0.73      0.73      0.71      8933
-</code></pre><p><img src="https://i.imgur.com/SpX0wok.png" alt=""></p><h4 id="ANN1" data-id="ANN"><a class="anchor hidden-xs" href="#ANN1" title="ANN1"><span class="octicon octicon-link"></span></a><span>ANN</span></h4><pre><code>|-----|-----|-----|-----|-----|
+</code></pre><p><img src="https://i.imgur.com/SpX0wok.png" alt=""></p><h4 id="SVM-linear" data-id="SVM-linear"><a class="anchor hidden-xs" href="#SVM-linear" title="SVM-linear"><span class="octicon octicon-link"></span></a><span>SVM-linear</span></h4><pre><code>|-----|-----|-----|-----|-----|
+              svm-linear              
+|-----|-----|-----|-----|-----|
+              precision    recall  f1-score   support
+
+   brazilian       0.39      0.33      0.36       111
+     british       0.35      0.30      0.32       169
+cajun_creole       0.71      0.68      0.69       350
+     chinese       0.73      0.83      0.77       599
+    filipino       0.58      0.56      0.57       186
+      french       0.49      0.56      0.52       574
+       greek       0.70      0.65      0.68       248
+      indian       0.86      0.88      0.87       687
+       irish       0.45      0.26      0.33       133
+     italian       0.77      0.85      0.81      1779
+    jamaican       0.70      0.46      0.55       145
+    japanese       0.76      0.67      0.71       357
+      korean       0.74      0.63      0.68       196
+     mexican       0.87      0.88      0.87      1418
+    moroccan       0.78      0.70      0.74       196
+     russian       0.56      0.35      0.43       102
+ southern_us       0.66      0.71      0.68       966
+     spanish       0.57      0.29      0.39       234
+        thai       0.72      0.74      0.73       305
+  vietnamese       0.66      0.46      0.54       178
+
+    accuracy                           0.72      8933
+   macro avg       0.65      0.59      0.61      8933
+weighted avg       0.72      0.72      0.72      8933
+</code></pre><p><img src="https://i.imgur.com/VqZYAiy.png" alt=""></p><h4 id="SVM-poly" data-id="SVM-poly"><a class="anchor hidden-xs" href="#SVM-poly" title="SVM-poly"><span class="octicon octicon-link"></span></a><span>SVM-poly</span></h4><pre><code>|-----|-----|-----|-----|-----|
+              svm-poly              
+|-----|-----|-----|-----|-----|
+              precision    recall  f1-score   support
+
+   brazilian       0.69      0.10      0.17       111
+     british       0.45      0.11      0.18       169
+cajun_creole       0.77      0.52      0.62       350
+     chinese       0.71      0.79      0.75       599
+    filipino       0.85      0.38      0.53       186
+      french       0.58      0.25      0.35       574
+       greek       0.80      0.38      0.52       248
+      indian       0.89      0.80      0.84       687
+       irish       0.36      0.07      0.11       133
+     italian       0.49      0.94      0.64      1779
+    jamaican       0.83      0.37      0.51       145
+    japanese       0.85      0.46      0.60       357
+      korean       0.74      0.42      0.53       196
+     mexican       0.90      0.81      0.85      1418
+    moroccan       0.84      0.58      0.69       196
+     russian       0.58      0.07      0.12       102
+ southern_us       0.53      0.66      0.59       966
+     spanish       0.55      0.14      0.22       234
+        thai       0.74      0.71      0.72       305
+  vietnamese       0.67      0.29      0.41       178
+
+    accuracy                           0.64      8933
+   macro avg       0.69      0.44      0.50      8933
+weighted avg       0.68      0.64      0.62      8933
+</code></pre><p><img src="https://i.imgur.com/NHhe6hv.png" alt=""></p><h4 id="SVM-sigmoid" data-id="SVM-sigmoid"><a class="anchor hidden-xs" href="#SVM-sigmoid" title="SVM-sigmoid"><span class="octicon octicon-link"></span></a><span>SVM-sigmoid</span></h4><pre><code>|-----|-----|-----|-----|-----|
+              svm-sigmoid              
+|-----|-----|-----|-----|-----|
+              precision    recall  f1-score   support
+
+   brazilian       0.11      0.02      0.03       111
+     british       0.11      0.05      0.07       169
+cajun_creole       0.42      0.37      0.39       350
+     chinese       0.56      0.70      0.62       599
+    filipino       0.35      0.18      0.24       186
+      french       0.35      0.29      0.32       574
+       greek       0.27      0.29      0.28       248
+      indian       0.66      0.70      0.68       687
+       irish       0.07      0.07      0.07       133
+     italian       0.57      0.78      0.66      1779
+    jamaican       0.21      0.05      0.08       145
+    japanese       0.50      0.36      0.42       357
+      korean       0.43      0.20      0.28       196
+     mexican       0.73      0.80      0.76      1418
+    moroccan       0.28      0.10      0.14       196
+     russian       1.00      0.02      0.04       102
+ southern_us       0.45      0.57      0.51       966
+     spanish       0.29      0.01      0.02       234
+        thai       0.40      0.56      0.47       305
+  vietnamese       0.44      0.08      0.14       178
+
+    accuracy                           0.53      8933
+   macro avg       0.41      0.31      0.31      8933
+weighted avg       0.51      0.53      0.50      8933
+</code></pre><p><img src="https://i.imgur.com/c7V48rj.png" alt=""></p><h4 id="ANN1" data-id="ANN"><a class="anchor hidden-xs" href="#ANN1" title="ANN1"><span class="octicon octicon-link"></span></a><span>ANN</span></h4><pre><code>|-----|-----|-----|-----|-----|
               ann              
 |-----|-----|-----|-----|-----|
               precision    recall  f1-score   support
@@ -405,7 +589,7 @@ cajun_creole       0.73      0.69      0.71       350
     accuracy                           0.74      8933
    macro avg       0.66      0.63      0.64      8933
 weighted avg       0.73      0.74      0.73      8933
-</code></pre><p><img src="https://i.imgur.com/S5YTEkQ.png" alt=""></p><h2 id="Comparison-amp-Conclusion" data-id="Comparison-amp-Conclusion"><a class="anchor hidden-xs" href="#Comparison-amp-Conclusion" title="Comparison-amp-Conclusion"><span class="octicon octicon-link"></span></a><span>Comparison &amp; Conclusion</span></h2><p><span>在資料前處理上，</span><code>word2vec</code><span>明顯是一個比</span><code>zero-padding</code><span>更好的選擇。</span></p><p><span>以</span><code>zero-padding</code><span>作為前處理的情況下，預測的結果基本上是樣本數最多者(</span><code>italian</code><span>)。樣本數量大大影響了預測結果，可以說</span><code>Feature</code><span>本身可能根本就沒有派上用場。畢竟我們的</span><code>Feature</code><span>本身是無序的排列組合，直接</span><code>zero-padding</code><span>實際上違反資料集本身的意義。</span></p><p><span>而若比較</span><code>svm</code><span>和</span><code>ann</code><span>，兩者都很大程度會受資料前處理的影響，而</span><code>svm</code><span>其實稍微比較穩定，</span><code>ann</code><span>若隱層沒有設定好，成效弱於</span><code>svm</code><span>的機會蠻高的。但反過來講，若設定良好，</span><code>ann</code><span>其實比較容易獲得更好的成效。</span></p><h2 id="Kaggle-Submission" data-id="Kaggle-Submission"><a class="anchor hidden-xs" href="#Kaggle-Submission" title="Kaggle-Submission"><span class="octicon octicon-link"></span></a><span>Kaggle Submission</span></h2><p><img src="https://i.imgur.com/hEZnd4Q.png" alt=""></p></div>
+</code></pre><p><img src="https://i.imgur.com/S5YTEkQ.png" alt=""></p><h2 id="Comparison-amp-Conclusion" data-id="Comparison-amp-Conclusion"><a class="anchor hidden-xs" href="#Comparison-amp-Conclusion" title="Comparison-amp-Conclusion"><span class="octicon octicon-link"></span></a><span>Comparison &amp; Conclusion</span></h2><p><span>在資料前處理上，</span><code>word2vec</code><span>明顯是一個比</span><code>zero-padding</code><span>更好的選擇。</span></p><p><span>以</span><code>zero-padding</code><span>作為前處理的情況下，預測的結果基本上是樣本數最多者(</span><code>italian</code><span>)。樣本數量大大影響了預測結果，可以說</span><code>Feature</code><span>本身可能根本就沒有派上用場。畢竟我們的</span><code>Feature</code><span>本身是無序的排列組合，直接</span><code>zero-padding</code><span>實際上違反資料集本身的意義。</span></p><p><span>比較</span><code>svm</code><span>不同</span><code>kernel</code><span>設定對結果的影響，我們可以看到最後的</span><code>accuracy</code><span>是</span><code>rbf</code><span>(</span><code>default</code><span>)最佳，然後是</span><code>linear</code><span>、</span><code>poly</code><span>最後是</span><code>sigmoid</code><span>。而若比較</span><code>svm</code><span>和</span><code>ann</code><span>，可以發現兩者都很大程度會受資料前處理的影響，而</span><code>svm</code><span>其實稍微比較穩定，</span><code>ann</code><span>若隱層沒有設定好，成效弱於</span><code>svm</code><span>的機會蠻高的。但反過來講，若設定良好，</span><code>ann</code><span>其實比較容易獲得更好的成效。</span></p><h2 id="Kaggle-Submission" data-id="Kaggle-Submission"><a class="anchor hidden-xs" href="#Kaggle-Submission" title="Kaggle-Submission"><span class="octicon octicon-link"></span></a><span>Kaggle Submission</span></h2><p><img src="https://i.imgur.com/hEZnd4Q.png" alt=""></p></div>
     <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
         <div class="pull-right dropdown">
             <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
@@ -427,10 +611,10 @@ weighted avg       0.73      0.74      0.73      8933
 <li><a href="#Artificial-Neural-Networks" title="Artificial Neural Networks">Artificial Neural Networks</a></li>
 </ul>
 </li>
-<li><a href="#Holdout-Validation" title="Holdout Validation">Holdout Validation</a></li>
-<li class=""><a href="#Result" title="Result">Result</a><ul class="nav">
+<li class=""><a href="#Holdout-Validation" title="Holdout Validation">Holdout Validation</a></li>
+<li><a href="#Results" title="Results">Results</a><ul class="nav">
 <li><a href="#Zero-Padding1" title="Zero-Padding">Zero-Padding</a></li>
-<li class=""><a href="#Word2Vec1" title="Word2Vec">Word2Vec</a></li>
+<li><a href="#Word2Vec1" title="Word2Vec">Word2Vec</a></li>
 </ul>
 </li>
 <li><a href="#Comparison-amp-Conclusion" title="Comparison &amp; Conclusion">Comparison &amp; Conclusion</a></li>
@@ -458,10 +642,10 @@ weighted avg       0.73      0.74      0.73      8933
 <li><a href="#Artificial-Neural-Networks" title="Artificial Neural Networks">Artificial Neural Networks</a></li>
 </ul>
 </li>
-<li><a href="#Holdout-Validation" title="Holdout Validation">Holdout Validation</a></li>
-<li class=""><a href="#Result" title="Result">Result</a><ul class="nav">
+<li class=""><a href="#Holdout-Validation" title="Holdout Validation">Holdout Validation</a></li>
+<li><a href="#Results" title="Results">Results</a><ul class="nav">
 <li><a href="#Zero-Padding1" title="Zero-Padding">Zero-Padding</a></li>
-<li class=""><a href="#Word2Vec1" title="Word2Vec">Word2Vec</a></li>
+<li><a href="#Word2Vec1" title="Word2Vec">Word2Vec</a></li>
 </ul>
 </li>
 <li><a href="#Comparison-amp-Conclusion" title="Comparison &amp; Conclusion">Comparison &amp; Conclusion</a></li>
